@@ -31,16 +31,25 @@ Commands time out after **5 minutes**. Maximum command size is **256 KB**.
 ## Installation
 
 Download the latest release from [Releases](https://github.com/vareysman/mac-drop-exec/releases).
-Each release includes:
 
-| File | Description |
-|------|-------------|
-| `mac-drop-exec-darwin-arm64` | Binary for Apple Silicon (M1/M2/M3/M4) |
-| `mac-drop-exec-darwin-amd64` | Binary for Intel |
-| `install.sh` | Install / status / uninstall script |
-| `com.admin.daemon.plist` | LaunchDaemon configuration |
+| Archive | Description |
+|---------|-------------|
+| `mac-drop-exec-darwin-arm64.tar.gz` | Apple Silicon (M1/M2/M3/M4) |
+| `mac-drop-exec-darwin-amd64.tar.gz` | Intel |
 
-Place all files in the same directory, then run:
+Each archive contains the binary, `install.sh`, and `com.admin.daemon.plist`.
+
+Download the archive for your architecture and extract it:
+
+```sh
+# Apple Silicon (M1/M2/M3/M4)
+tar -xzf mac-drop-exec-darwin-arm64.tar.gz
+
+# Intel
+tar -xzf mac-drop-exec-darwin-amd64.tar.gz
+```
+
+Then run:
 
 ```sh
 sudo ./install.sh install
