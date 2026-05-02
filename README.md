@@ -25,24 +25,46 @@ Commands time out after **5 minutes**. Maximum command size is **256 KB**.
 
 ## Requirements
 
-- macOS (tested on macOS 12+)
-- Go 1.26+
+- macOS 12+
 - Root privileges for installation
 
 ## Installation
+
+Download the latest release from [Releases](https://github.com/vareysman/mac-drop-exec/releases).
+Each release includes:
+
+| File | Description |
+|------|-------------|
+| `mac-drop-exec-darwin-arm64` | Binary for Apple Silicon (M1/M2/M3/M4) |
+| `mac-drop-exec-darwin-amd64` | Binary for Intel |
+| `install.sh` | Install / status / uninstall script |
+| `com.admin.daemon.plist` | LaunchDaemon configuration |
+
+Place all files in the same directory, then run:
 
 ```sh
 sudo ./install.sh install
 ```
 
-The script will:
-- Build the binary with `go build`
-- Install it to `/usr/local/sbin/admin-daemon`
-- Register and start the LaunchDaemon (`com.admin.daemon`)
+The script auto-detects the architecture and installs the correct binary to `/usr/local/sbin/admin-daemon`, then registers and starts the LaunchDaemon.
 
 Logs are written to:
 - `/var/log/admin-daemon.log` — stdout
 - `/var/log/admin-daemon.err` — stderr
+
+## Building from source
+
+Requirements: Go 1.26+
+
+```sh
+# Apple Silicon
+GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o mac-drop-exec-darwin-arm64 .
+
+# Intel
+GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o mac-drop-exec-darwin-amd64 .
+```
+
+Then run `sudo ./install.sh install` as described above.
 
 ## Usage
 

@@ -11,12 +11,33 @@ usage() {
   echo "Usage: $0 [install|status|uninstall]"
 }
 
+detect_binary() {
+  ARCH="$(uname -m)"
+  case "$ARCH" in
+    arm64)  BINARY="mac-drop-exec-darwin-arm64" ;;
+    x86_64) BINARY="mac-drop-exec-darwin-amd64" ;;
+    *)
+      echo "Unsupported architecture: $ARCH" >&2
+      exit 1
+      ;;
+  esac
+
+  BINARY_PATH="$(dirname "$0")/$BINARY"
+  if [ ! -f "$BINARY_PATH" ]; then
+    echo "Binary not found: $BINARY_PATH" >&2
+    echo "Download it from https://github.com/vareysman/mac-drop-exec/releases" >&2
+    echo "or build from source: go build -o $BINARY ." >&2
+    exit 1
+  fi
+
+  echo "$BINARY_PATH"
+}
+
 do_install() {
-  cd "$(dirname "$0")"
-  go build -o admin-daemon .
+  BINARY_PATH="$(detect_binary)"
 
   install -d "$ROOT"
-  install -m 755 admin-daemon "$ROOT/admin-daemon"
+  install -m 755 "$BINARY_PATH" "$ROOT/admin-daemon"
 
   install -m 644 "$PLIST_SRC" "$PLIST_DST"
   launchctl bootout system "$PLIST_DST" 2>/dev/null || true
