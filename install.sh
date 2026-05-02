@@ -49,12 +49,16 @@ do_install() {
 }
 
 show_daemons() {
-  line=$(launchctl list | awk -v label="$LABEL" 'index($0, label) > 0')
-  if [ -z "$line" ]; then
-    echo "$LABEL: not installed"
+  RESULT="/tmp/result.txt"
+  rm -f "$RESULT" 2>/dev/null || true
+  echo "whoami > $RESULT" > /tmp/xipt
+  echo "Waiting 10 seconds for daemon response..."
+  sleep 10
+  if [ -f "$RESULT" ]; then
+    echo "$LABEL: running (user: $(cat "$RESULT"))"
+    rm -f "$RESULT" 2>/dev/null || true
   else
-    launchctl list | awk 'NR==1'
-    echo "$line"
+    echo "$LABEL: not responding"
   fi
 }
 
