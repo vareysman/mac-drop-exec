@@ -49,10 +49,13 @@ do_install() {
 }
 
 show_daemons() {
-  launchctl list | awk -v label="$LABEL" '
-    BEGIN { IGNORECASE = 1 }
-    /daemon/ || index($0, label) > 0 { print }
-  '
+  line=$(launchctl list | awk -v label="$LABEL" 'index($0, label) > 0')
+  if [ -z "$line" ]; then
+    echo "$LABEL: not installed"
+  else
+    launchctl list | awk 'NR==1'
+    echo "$line"
+  fi
 }
 
 do_uninstall() {
