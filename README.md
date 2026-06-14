@@ -19,7 +19,7 @@ Drop a shell command into `/tmp/xipt` — the daemon picks it up, runs it with r
 1. Daemon polls `/tmp/xipt` every **10 seconds**
 2. If the file exists — reads the command, executes it via `/bin/sh -c`
 3. Removes `/tmp/xipt` after execution
-4. On failure — writes combined error + output to `/tmp/xopt`
+4. On failure — writes combined error + output to `/tmp/xopt.<worker>` (e.g. `/tmp/xopt.0`)
 
 Commands time out after **5 minutes**. Maximum command size is **256 KB**.
 
@@ -84,18 +84,19 @@ echo "whoami > /tmp/result.txt" > /tmp/xipt
 # Wait up to 10 seconds, then read the result
 cat /tmp/result.txt
 
-# On failure, check the error output
-cat /tmp/xopt
+# On failure, check the error output (worker 0 when PROC_NUM=1)
+cat /tmp/xopt.0
 ```
 
 ## Configuration
 
 The input and output paths can be overridden via environment variables in the plist:
 
-| Variable           | Default      | Description              |
-|--------------------|--------------|--------------------------|
-| `ADMIN_DAEMON_IN`  | `/tmp/xipt`  | Path polled for commands |
-| `ADMIN_DAEMON_OUT` | `/tmp/xopt`  | Path for error output    |
+| Variable                | Default      | Description                                      |
+|-------------------------|--------------|--------------------------------------------------|
+| `ADMIN_DAEMON_IN`       | `/tmp/xipt`  | Path polled for commands                         |
+| `ADMIN_DAEMON_OUT`      | `/tmp/xopt`  | Base path for error output (`<path>.<worker>`)   |
+| `ADMIN_DAEMON_PROC_NUM` | `5`          | Max concurrent command goroutines                |
 
 ## Managing the daemon
 

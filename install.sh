@@ -45,7 +45,7 @@ do_install() {
   launchctl enable "system/$LABEL"
   launchctl kickstart -k "system/$LABEL"
 
-  echo "Installed. Create /tmp/xipt with the shell command to run; on failure read /tmp/xopt."
+  echo "Installed. Create /tmp/xipt with the shell command to run; on failure read /tmp/xopt.0 (or /tmp/xopt.<worker> if ADMIN_DAEMON_PROC_NUM>1)."
 }
 
 show_daemons() {
